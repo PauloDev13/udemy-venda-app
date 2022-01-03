@@ -1,10 +1,12 @@
 import { NextPage } from 'next';
 
+import { Menu } from '~/components/layout/menu';
+
 export const Layout: NextPage = () => {
   return (
     <div className={'app'}>
       <section className={'main-content columns is-fullheight'}>
-        {/*{Menu aqui}*/}
+        <Menu />
         <div className="container column is-10">
           <div className="section">
             <div className="card">
