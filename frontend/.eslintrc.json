@@ -5,7 +5,7 @@
     "eslint-plugin-import-helpers"
   ],
   "extends": [
-//    "next/core-web-vitals",
+    //    "next/core-web-vitals",
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
@@ -51,7 +51,7 @@
       }
     ],
     "no-console": [
-      "warn",
+      "off",
       {
         "allow": [
           "warn",
