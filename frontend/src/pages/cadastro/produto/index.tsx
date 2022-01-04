@@ -1,3 +1,3 @@
-import { CadastroProduto } from '~/components/produtos/cadastro';
+import { FormProduct } from '~/components/produtos/cadastro/FormProduct';
 
-export default CadastroProduto;
+export default FormProduct;

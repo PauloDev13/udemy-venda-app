@@ -1,12 +1,18 @@
+import { ReactNode } from 'react';
+
 import { NextPage } from 'next';
 
 import { Menu } from '~/components/layout/menu';
 
 interface LayoutProps {
   title?: string;
+  children?: ReactNode;
 }
 
-export const Layout: NextPage<LayoutProps> = ({ title, children }) => {
+export const Layout: NextPage<LayoutProps> = ({
+  title,
+  children,
+}: LayoutProps) => {
   return (
     <div className={'app'}>
       <section className={'main-content columns is-fullheight'}>
