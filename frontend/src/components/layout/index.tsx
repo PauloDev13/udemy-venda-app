@@ -2,7 +2,11 @@ import { NextPage } from 'next';
 
 import { Menu } from '~/components/layout/menu';
 
-export const Layout: NextPage = () => {
+interface LayoutProps {
+  title?: string;
+}
+
+export const Layout: NextPage<LayoutProps> = ({ title, children }) => {
   return (
     <div className={'app'}>
       <section className={'main-content columns is-fullheight'}>
@@ -11,10 +15,10 @@ export const Layout: NextPage = () => {
           <div className="section">
             <div className="card">
               <div className="card-header">
-                <p className="card-header-title">Cadastro</p>
+                <p className="card-header-title">{title}</p>
               </div>
               <div className="card-content">
-                <div className="content">conteúdo</div>
+                <div className="content">{children}</div>
               </div>
             </div>
           </div>
