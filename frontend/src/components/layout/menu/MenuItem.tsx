@@ -1,4 +1,5 @@
 import { NextPage } from 'next';
+import Link from 'next/link';
 
 interface MenuItemProps {
   href: string;
@@ -8,9 +9,14 @@ interface MenuItemProps {
 export const MenuItem: NextPage<MenuItemProps> = ({ href, label }) => {
   return (
     <li>
-      <a href={href}>
-        <span className="icon">{label}</span>
-      </a>
+      {href && (
+        <Link href={href}>
+          <a className="icon">{label}</a>
+        </Link>
+      )}
+      {/*<a href={href}>*/}
+      {/*  <span className="icon">{label}</span>*/}
+      {/*</a>*/}
     </li>
   );
 };

@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 import { NextPage } from 'next';
 
+import { ProductModel } from '~/app/model/productModel';
+import { useProductService } from '~/app/service/ProductService';
 import { Input } from '~/components/common/input/Input';
 import { Layout } from '~/components/layout/Layout';
 
@@ -10,19 +12,49 @@ export const FormProduct: NextPage = () => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
+  const [id, setId] = useState('');
+  const [createdAt, setCreatedAt] = useState('');
+
+  const service = useProductService();
 
   const submit = () => {
-    const produto = {
+    const product: ProductModel = {
       sku,
-      price,
+      price: Number(price),
       name,
       description,
     };
-    console.log(produto);
+
+    if (id) {
+      service.update(id, product).then(() => console.log('Produto atualizado'));
+    } else {
+      service.save(product).then((response) => {
+        setId(response.id ?? '');
+        setCreatedAt(response.createdAt ?? '');
+      });
+    }
   };
 
   return (
     <Layout title="Cadastro de Produtos">
+      {id && (
+        <div className="columns">
+          <Input
+            label="Código"
+            columnClasse="is-half"
+            id="inputCodigo"
+            value={id}
+            disabled
+          />
+          <Input
+            label="Data Cadastro"
+            columnClasse="is-half"
+            id="inputCreated"
+            value={createdAt}
+            disabled
+          />
+        </div>
+      )}
       <div className="columns">
         <Input
           label="SKU *"
@@ -72,7 +104,7 @@ export const FormProduct: NextPage = () => {
       <div className="field is-grouped">
         <div className="control">
           <button onClick={submit} className="button is-link">
-            Salvar
+            {id ? 'Atualizar' : 'Salvar'}
           </button>
         </div>
         <div className="control">

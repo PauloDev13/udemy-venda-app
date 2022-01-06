@@ -1,9 +1,24 @@
+########## MARIADB CONFIGURATION ###########
 spring:
+  application:
+    name: vendas-app
   datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password: 1234
-    driver-class-name: org.h2.Driver
+    url: jdbc:mysql://localhost:3306/vendas_udemy_db?useTimezone=true&createDatabaseIfNotExist=true
+    username: root
+    password: Paulo1313
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MariaDB103Dialect
+    hibernate:
+      ddl-auto: update
     show-sql: true
+    database: mysql
+
+#spring:
+#  datasource:
+#    url: jdbc:h2:mem:testdb
+#    username: sa
+#    password: 1234
+#    driver-class-name: org.h2.Driver
+#  jpa:
+#    database-platform: org.hibernate.dialect.H2Dialect
+#    show-sql: true
