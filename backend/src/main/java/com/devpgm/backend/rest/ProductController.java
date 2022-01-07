@@ -4,6 +4,7 @@ import com.devpgm.backend.Dto.ProductRequestDto;
 import com.devpgm.backend.Dto.ProductResponseDto;
 import com.devpgm.backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ public class ProductController {
 
   @PostMapping
   public ResponseEntity<ProductResponseDto> save(@RequestBody ProductRequestDto productDto) {
-    return ResponseEntity.ok(productService.save(productDto));
+    return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(productDto));
   }
 
   @PutMapping("/{id}")
@@ -37,5 +38,11 @@ public class ProductController {
       @RequestBody ProductRequestDto productDto
   ) {
     return ResponseEntity.ok(productService.update(id, productDto));
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable Long id) {
+    productService.delete(id);
+    return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }

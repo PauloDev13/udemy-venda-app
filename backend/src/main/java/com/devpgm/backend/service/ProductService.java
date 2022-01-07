@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -27,19 +28,35 @@ public class ProductService {
 
   public ProductResponseDto getById(Long id) {
     Product product = productRepository.findById(id).orElseThrow(
-        () -> new RuntimeException("Produto com ID: %s não cadastrado")
-    );
+        () -> new RuntimeException(String.format("Produto com ID: %s não cadastrado", id)));
     return responseMapper.productToDto(product);
   }
 
   public ProductResponseDto save(ProductRequestDto productDto) {
+    isDuplicateProduct(requestMapper.dtoToProduct(productDto));
     Product productSaved = productRepository.save(requestMapper.dtoToProduct(productDto));
     return responseMapper.productToDto(productSaved);
   }
 
   public ProductResponseDto update(Long id, ProductRequestDto productDto) {
-    Product product = responseMapper.dtoToProduct(getById(id));
-    requestMapper.updateProductDto(productDto, product);
-    return responseMapper.productToDto(productRepository.save(product));
+    Product productUpdated = responseMapper.dtoToProduct(getById(id));
+    requestMapper.updateProductDto(productDto, productUpdated);
+    isDuplicateProduct(productUpdated);
+    return responseMapper.productToDto(productRepository.save(productUpdated));
+  }
+
+  public void delete(Long id) {
+    getById(id);
+    productRepository.deleteById(id);
+  }
+  // Métodos auxiliares
+
+  private void isDuplicateProduct(Product product) {
+    Product findProduct = productRepository.findBySku(product.getSku());
+
+    if (findProduct != null && !Objects.equals(findProduct.getId(), product.getId())) {
+      throw new RuntimeException(String.format("Produto com SKU: %s já existe", product.getSku()));
+    }
+
   }
 }

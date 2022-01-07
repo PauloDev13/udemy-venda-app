@@ -18,7 +18,7 @@ public class Product {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(unique = true, nullable = false)
+  @Column(nullable = false)
   private String sku;
 
   @Column(length = 100, nullable = false)
@@ -29,7 +29,7 @@ public class Product {
   @Column(precision = 16, scale = 2, nullable = false)
   private BigDecimal price;
 
-  @Column(name="date_created")
+  @Column(name = "date_created")
   private LocalDate createdAt;
 
   @PrePersist
