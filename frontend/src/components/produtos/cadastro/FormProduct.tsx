@@ -6,6 +6,7 @@ import { ProductModel } from '~/app/model/productModel';
 import { useProductService } from '~/app/service/ProductService';
 import { convertToBigdecimal } from '~/app/util/Converter';
 import { Input } from '~/components/common/input/Input';
+import { Message } from '~/components/common/message/message';
 import { Layout } from '~/components/layout/Layout';
 
 export const FormProduct: NextPage = () => {
@@ -41,6 +42,7 @@ export const FormProduct: NextPage = () => {
 
   return (
     <Layout title="Cadastro de Produtos">
+      <Message type="danger" field="Nome" message="não pode ser vazio" />
       {id && (
         <div className="columns">
           <Input
