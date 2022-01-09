@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { NextPage } from 'next';
+import * as yup from 'yup';
 
 import { ProductModel } from '~/app/model/productModel';
 import { useProductService } from '~/app/service/ProductService';
@@ -8,6 +9,13 @@ import { convertToBigdecimal } from '~/app/util/Converter';
 import { Input } from '~/components/common/input/Input';
 import { IMessage } from '~/components/common/interfaces';
 import { Layout } from '~/components/layout/Layout';
+
+const validationSchema = yup.object().shape({
+  sku: yup.string().required(),
+  name: yup.string().required(),
+  price: yup.number().required(),
+  description: yup.string().required(),
+});
 
 export const FormProduct: NextPage = () => {
   const [sku, setSku] = useState('');
@@ -28,47 +36,63 @@ export const FormProduct: NextPage = () => {
       description,
     };
 
-    if (id) {
-      service.update(id, product).then(
-        () => {
-          setMessages([
-            {
-              message: 'Produto atualizado com sucesso',
-              type: 'success',
+    validationSchema
+      .validate(product)
+      .then(() => {
+        if (id) {
+          service.update(id, product).then(
+            () => {
+              setMessages([
+                {
+                  message: 'Produto atualizado com sucesso',
+                  type: 'success',
+                },
+              ]);
             },
-          ]);
-        },
-        () => {
-          setMessages([
-            {
-              message: 'Erro ao Salvar/Alterar produto!',
-              type: 'danger',
+            () => {
+              setMessages([
+                {
+                  message: 'Erro ao Salvar/Alterar produto!',
+                  type: 'danger',
+                },
+              ]);
             },
-          ]);
-        },
-      );
-    } else {
-      service.save(product).then(
-        (response) => {
-          setId(response.id ?? '');
-          setCreatedAt(response.createdAt ?? '');
-          setMessages([
-            {
-              message: 'Produto adicionado com sucesso!',
-              type: 'success',
+          );
+        } else {
+          service.save(product).then(
+            (response) => {
+              setId(response.id ?? '');
+              setCreatedAt(response.createdAt ?? '');
+              setMessages([
+                {
+                  message: 'Produto adicionado com sucesso!',
+                  type: 'success',
+                },
+              ]);
             },
-          ]);
-        },
-        () => {
-          setMessages([
-            {
-              message: 'Erro ao Salvar/Alterar produto!',
-              type: 'danger',
+            () => {
+              setMessages([
+                {
+                  message: 'Erro ao Salvar/Alterar produto!',
+                  type: 'danger',
+                },
+              ]);
             },
-          ]);
-        },
-      );
-    }
+          );
+        }
+      })
+      .catch((err) => {
+        const field = err.path;
+        const message = err.message;
+
+        setMessages([
+          {
+            type: 'danger',
+            field,
+            message,
+          },
+        ]);
+      });
   };
 
   return (

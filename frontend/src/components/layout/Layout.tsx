@@ -29,7 +29,10 @@ export const Layout: NextPage<LayoutProps> = ({
               </div>
               <div className="card-content">
                 <div className="content">
-                  {messages && messages.map((msg) => <Message {...msg} />)}
+                  {messages &&
+                    messages.map((msg) => (
+                      <Message key={msg.message} {...msg} />
+                    ))}
                   {children}
                 </div>
               </div>
