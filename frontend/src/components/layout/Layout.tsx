@@ -2,15 +2,19 @@ import { ReactNode } from 'react';
 
 import { NextPage } from 'next';
 
+import { IMessage } from '~/components/common/interfaces';
+import { Message } from '~/components/common/message/message';
 import { Menu } from '~/components/layout/menu';
 
 interface LayoutProps {
   title?: string;
   children?: ReactNode;
+  messages?: IMessage[];
 }
 
 export const Layout: NextPage<LayoutProps> = ({
   title,
+  messages,
   children,
 }: LayoutProps) => {
   return (
@@ -24,7 +28,10 @@ export const Layout: NextPage<LayoutProps> = ({
                 <p className="card-header-title">{title}</p>
               </div>
               <div className="card-content">
-                <div className="content">{children}</div>
+                <div className="content">
+                  {messages && messages.map((msg) => <Message {...msg} />)}
+                  {children}
+                </div>
               </div>
             </div>
           </div>

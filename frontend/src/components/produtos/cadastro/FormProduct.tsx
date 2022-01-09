@@ -6,7 +6,7 @@ import { ProductModel } from '~/app/model/productModel';
 import { useProductService } from '~/app/service/ProductService';
 import { convertToBigdecimal } from '~/app/util/Converter';
 import { Input } from '~/components/common/input/Input';
-import { Message } from '~/components/common/message/message';
+import { IMessage } from '~/components/common/interfaces';
 import { Layout } from '~/components/layout/Layout';
 
 export const FormProduct: NextPage = () => {
@@ -16,6 +16,7 @@ export const FormProduct: NextPage = () => {
   const [description, setDescription] = useState('');
   const [id, setId] = useState('');
   const [createdAt, setCreatedAt] = useState('');
+  const [messages, setMessages] = useState<IMessage[]>([]);
 
   const service = useProductService();
 
@@ -28,21 +29,50 @@ export const FormProduct: NextPage = () => {
     };
 
     if (id) {
-      service.update(id, product).then(() => console.log('Produto atualizado'));
+      service.update(id, product).then(
+        () => {
+          setMessages([
+            {
+              message: 'Produto atualizado com sucesso',
+              type: 'success',
+            },
+          ]);
+        },
+        () => {
+          setMessages([
+            {
+              message: 'Erro ao Salvar/Alterar produto!',
+              type: 'danger',
+            },
+          ]);
+        },
+      );
     } else {
-      service
-        .save(product)
-        .then((response) => {
+      service.save(product).then(
+        (response) => {
           setId(response.id ?? '');
           setCreatedAt(response.createdAt ?? '');
-        })
-        .catch(() => console.log('Aconteceu um erro'));
+          setMessages([
+            {
+              message: 'Produto adicionado com sucesso!',
+              type: 'success',
+            },
+          ]);
+        },
+        () => {
+          setMessages([
+            {
+              message: 'Erro ao Salvar/Alterar produto!',
+              type: 'danger',
+            },
+          ]);
+        },
+      );
     }
   };
 
   return (
-    <Layout title="Cadastro de Produtos">
-      <Message type="danger" field="Nome" message="não pode ser vazio" />
+    <Layout title="Cadastro de Produtos" messages={messages}>
       {id && (
         <div className="columns">
           <Input
