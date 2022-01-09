@@ -28,10 +28,13 @@ export const FormProduct: NextPage = () => {
     if (id) {
       service.update(id, product).then(() => console.log('Produto atualizado'));
     } else {
-      service.save(product).then((response) => {
-        setId(response.id ?? '');
-        setCreatedAt(response.createdAt ?? '');
-      });
+      service
+        .save(product)
+        .then((response) => {
+          setId(response.id ?? '');
+          setCreatedAt(response.createdAt ?? '');
+        })
+        .catch(() => console.log('Aconteceu um erro'));
     }
   };
 
