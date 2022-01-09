@@ -10,6 +10,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   columnClasse?: string;
   onChange?: (value: any) => void;
   currency?: boolean;
+  error?: string;
 }
 
 export const Input: NextPage<InputProps> = ({
@@ -17,6 +18,7 @@ export const Input: NextPage<InputProps> = ({
   label,
   columnClasse,
   currency,
+  error,
   onChange,
   ...props
 }: InputProps) => {
@@ -34,6 +36,7 @@ export const Input: NextPage<InputProps> = ({
       </label>
       <div className="control">
         <input className="input" id={id} onChange={onInputChange} {...props} />
+        {error && <p className="help is-danger">{error}</p>}
       </div>
     </div>
   );

@@ -3,3 +3,10 @@ export interface IMessage {
   field?: string;
   message: string;
 }
+
+export interface Ierror {
+  sku?: string;
+  name?: string;
+  price?: string;
+  description?: string;
+}
