@@ -4,6 +4,7 @@ import { NextPage } from 'next';
 
 import { ProductModel } from '~/app/model/productModel';
 import { useProductService } from '~/app/service/ProductService';
+import { convertToBigdecimal } from '~/app/util/Converter';
 import { Input } from '~/components/common/input/Input';
 import { Layout } from '~/components/layout/Layout';
 
@@ -20,7 +21,7 @@ export const FormProduct: NextPage = () => {
   const submit = () => {
     const product: ProductModel = {
       sku,
-      price: Number(price),
+      price: convertToBigdecimal(price),
       name,
       description,
     };
@@ -72,6 +73,8 @@ export const FormProduct: NextPage = () => {
           columnClasse="is-half"
           id="inputPrice"
           value={price}
+          currency
+          maxLength={16}
           onChange={setPrice}
           placeholder="Digite o preço do produto"
         />
