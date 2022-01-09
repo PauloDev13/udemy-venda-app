@@ -10,11 +10,20 @@ import { Input } from '~/components/common/input/Input';
 import { IMessage } from '~/components/common/interfaces';
 import { Layout } from '~/components/layout/Layout';
 
+const msgRequired = 'é obrigatório!';
+
 const validationSchema = yup.object().shape({
-  sku: yup.string().required(),
-  name: yup.string().required(),
-  price: yup.number().required(),
-  description: yup.string().required(),
+  sku: yup
+    .string()
+    .trim()
+    .required(msgRequired)
+    .min(5, 'deve ter no mínimo 5 caracteres!'),
+  name: yup.string().trim().required(msgRequired),
+  price: yup
+    .number()
+    .required(msgRequired)
+    .moreThan(0, 'deve ser maior que 0,00 (zero)!'),
+  description: yup.string().trim().required(msgRequired),
 });
 
 export const FormProduct: NextPage = () => {
@@ -82,8 +91,18 @@ export const FormProduct: NextPage = () => {
         }
       })
       .catch((err) => {
-        const field = err.path;
+        let field = err.path;
         const message = err.message;
+
+        if (field == 'name') {
+          field = 'NOME';
+        } else if (field == 'price') {
+          field = 'PREÇO';
+        } else if (field == 'description') {
+          field = 'DESCRIÇÃO';
+        } else {
+          field = 'SKU';
+        }
 
         setMessages([
           {
