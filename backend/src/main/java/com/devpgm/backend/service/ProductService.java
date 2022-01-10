@@ -23,7 +23,8 @@ public class ProductService {
   public List<ProductResponseDto> getAll() {
     return productRepository.findAll()
         .stream()
-        .map(responseMapper::productToDto).collect(Collectors.toList());
+        .map(responseMapper::productToDto)
+        .collect(Collectors.toList());
   }
 
   public ProductResponseDto getById(Long id) {

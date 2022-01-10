@@ -26,7 +26,7 @@ export const useProductService = () => {
   };
 
   const getAll = async () => {
-    const response: AxiosResponse<ProductModel> = await httpClient.get(
+    const response: AxiosResponse<ProductModel[]> = await httpClient.get(
       resourceUrl,
     );
     return response.data;

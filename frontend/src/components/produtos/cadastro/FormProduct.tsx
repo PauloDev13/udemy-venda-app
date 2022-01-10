@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { NextPage } from 'next';
+import Link from 'next/link';
 import * as yup from 'yup';
 
 import { ProductModel } from '~/app/model/productModel';
@@ -56,27 +57,28 @@ export const FormProduct: NextPage = () => {
         setErrors({});
 
         if (id) {
-          service.update(id, product).then(
-            () => {
+          service
+            .update(id, product)
+            .then(() => {
               setMessages([
                 {
                   message: 'Produto atualizado com sucesso',
                   type: 'success',
                 },
               ]);
-            },
-            () => {
+            })
+            .catch(() => {
               setMessages([
                 {
                   message: 'Erro ao Salvar/Alterar produto!',
                   type: 'danger',
                 },
               ]);
-            },
-          );
+            });
         } else {
-          service.save(product).then(
-            (response) => {
+          service
+            .save(product)
+            .then((response) => {
               setId(response.id ?? '');
               setCreatedAt(response.createdAt ?? '');
               setMessages([
@@ -85,16 +87,15 @@ export const FormProduct: NextPage = () => {
                   type: 'success',
                 },
               ]);
-            },
-            () => {
+            })
+            .catch(() => {
               setMessages([
                 {
                   message: 'Erro ao Salvar/Alterar produto!',
                   type: 'danger',
                 },
               ]);
-            },
-          );
+            });
         }
       })
       .catch((err) => {
@@ -188,7 +189,9 @@ export const FormProduct: NextPage = () => {
           </button>
         </div>
         <div className="control">
-          <button className="button is-link is-light">Cancelar</button>
+          <Link href="/consultas/produtos">
+            <button className="button is-link is-light">Listar</button>
+          </Link>
         </div>
       </div>
     </Layout>
