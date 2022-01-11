@@ -32,9 +32,19 @@ export const useProductService = () => {
     return response.data;
   };
 
+  // const getAllProducts = async () => {
+  //   const fetcher = (url: string) => httpClient.get(url);
+  //   const { data: products } = await useSWR<AxiosResponse<ProductModel[]>>(
+  //     resourceUrl,
+  //     fetcher,
+  //   );
+  //   return products && products.data;
+  // };
+
   return {
     save,
     getAll,
+    // getAllProducts,
     update,
   };
 };
