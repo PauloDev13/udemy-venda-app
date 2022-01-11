@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { NextPage } from 'next';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import * as yup from 'yup';
 
 import { ProductModel } from '~/app/model/productModel';
 import { useProductService } from '~/app/service/ProductService';
-import { convertToBigdecimal } from '~/app/util/Converter';
+import { convertToBigdecimal, convertToReal } from '~/app/util/Converter';
 import { Input } from '~/components/common/input/Input';
 import { Ierror, IMessage } from '~/components/common/interfaces';
 import { Layout } from '~/components/layout/Layout';
@@ -42,6 +43,26 @@ export const FormProduct: NextPage = () => {
   const [errors, setErrors] = useState<Ierror>({});
 
   const service = useProductService();
+
+  const router = useRouter();
+  const { prodId } = router.query;
+
+  useEffect(() => {
+    if (prodId) {
+      service
+        .getById(prodId)
+        .then(
+          ({ id, sku, name, price, description, createdAt }: ProductModel) => {
+            setId(id ?? '');
+            setSku(sku ?? '');
+            setName(name ?? '');
+            setPrice(convertToReal(`${price?.toFixed(2)}`));
+            setDescription(description ?? '');
+            setCreatedAt(createdAt ?? '');
+          },
+        );
+    }
+  }, []);
 
   const submit = () => {
     const product: ProductModel = {
@@ -189,7 +210,7 @@ export const FormProduct: NextPage = () => {
           </button>
         </div>
         <div className="control">
-          <Link href="/consultas/produtos">
+          <Link href={'/consultas/produtos'}>
             <button className="button is-link is-light">Listar</button>
           </Link>
         </div>

@@ -21,11 +21,11 @@ public class ProductService {
   private final ProductRequestMapper requestMapper;
 
   public List<ProductResponseDto> getAll() {
-    try {
-      Thread.sleep(3000);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
+//    try {
+//      Thread.sleep(3000);
+//    } catch (InterruptedException e) {
+//      e.printStackTrace();
+//    }
     return productRepository.findAll()
         .stream()
         .map(responseMapper::productToDto)

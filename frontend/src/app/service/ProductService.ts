@@ -32,6 +32,17 @@ export const useProductService = () => {
     return response.data;
   };
 
+  const getById = async (id: any) => {
+    const { data }: AxiosResponse<ProductModel> =
+      await httpClient.get<ProductModel>(`/api/products/${id}`);
+    return data;
+
+    // const response: AxiosResponse<ProductModel> = await httpClient.get(
+    //   `resourceUrl/${id}`,
+    // );
+    // return response.data;
+  };
+
   // const getAllProducts = async () => {
   //   const fetcher = (url: string) => httpClient.get(url);
   //   const { data: products } = await useSWR<AxiosResponse<ProductModel[]>>(
@@ -44,6 +55,7 @@ export const useProductService = () => {
   return {
     save,
     getAll,
+    getById,
     // getAllProducts,
     update,
   };
