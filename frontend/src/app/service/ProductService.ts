@@ -25,16 +25,17 @@ export const useProductService = () => {
     return response.data;
   };
 
-  const getAll = async () => {
+  const getAll = async (): Promise<ProductModel[]> => {
     const response: AxiosResponse<ProductModel[]> = await httpClient.get(
       resourceUrl,
     );
     return response.data;
   };
 
-  const getById = async (id: any) => {
-    const { data }: AxiosResponse<ProductModel> =
-      await httpClient.get<ProductModel>(`/api/products/${id}`);
+  const getById = async (id: any): Promise<ProductModel> => {
+    const { data }: AxiosResponse<ProductModel> = await httpClient.get(
+      `${resourceUrl}/${id}`,
+    );
     return data;
 
     // const response: AxiosResponse<ProductModel> = await httpClient.get(
@@ -42,21 +43,15 @@ export const useProductService = () => {
     // );
     // return response.data;
   };
-
-  // const getAllProducts = async () => {
-  //   const fetcher = (url: string) => httpClient.get(url);
-  //   const { data: products } = await useSWR<AxiosResponse<ProductModel[]>>(
-  //     resourceUrl,
-  //     fetcher,
-  //   );
-  //   return products && products.data;
-  // };
+  const deleteById = async (id: any): Promise<void> => {
+    await httpClient.delete<void>(`${resourceUrl}/${id}`);
+  };
 
   return {
     save,
     getAll,
     getById,
-    // getAllProducts,
+    deleteById,
     update,
   };
 };
