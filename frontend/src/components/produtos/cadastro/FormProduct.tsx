@@ -80,18 +80,19 @@ export const FormProduct: NextPage = () => {
         if (id) {
           service
             .update(id, product)
-            .then(() => {
+            .then((response) => {
               setMessages([
                 {
-                  message: 'Produto atualizado com sucesso',
+                  message: `Produto ${response.name?.toUpperCase()} atualizado com sucesso`,
                   type: 'success',
                 },
               ]);
             })
-            .catch(() => {
+            .catch((error) => {
+              const { data } = error.response;
               setMessages([
                 {
-                  message: 'Erro ao Salvar/Alterar produto!',
+                  message: `ERRO: ${data.titulo}`,
                   type: 'danger',
                 },
               ]);
@@ -104,15 +105,16 @@ export const FormProduct: NextPage = () => {
               setCreatedAt(response.createdAt ?? '');
               setMessages([
                 {
-                  message: 'Produto adicionado com sucesso!',
+                  message: `Produto ${response.name?.toUpperCase()} adicionado com sucesso`,
                   type: 'success',
                 },
               ]);
             })
-            .catch(() => {
+            .catch((error) => {
+              const { data } = error.response;
               setMessages([
                 {
-                  message: 'Erro ao Salvar/Alterar produto!',
+                  message: `ERRO: ${data.titulo}`,
                   type: 'danger',
                 },
               ]);

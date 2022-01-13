@@ -2,15 +2,16 @@ package com.devpgm.backend.service;
 
 import com.devpgm.backend.Dto.ProductRequestDto;
 import com.devpgm.backend.Dto.ProductResponseDto;
+import com.devpgm.backend.exceptionhandler.NegocioException;
 import com.devpgm.backend.mapper.ProductRequestMapper;
 import com.devpgm.backend.mapper.ProductResponseMapper;
 import com.devpgm.backend.model.Product;
 import com.devpgm.backend.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -34,20 +35,22 @@ public class ProductService {
 
   public ProductResponseDto getById(Long id) {
     Product product = productRepository.findById(id).orElseThrow(
-        () -> new RuntimeException(String.format("Produto com ID: %s não cadastrado", id)));
+        () -> new NegocioException(String.format("Produto com ID: %s não cadastrado", id)));
     return responseMapper.productToDto(product);
   }
 
+  @Transactional
   public ProductResponseDto save(ProductRequestDto productDto) {
-    isDuplicateProduct(requestMapper.dtoToProduct(productDto));
+    isDuplicateSku(requestMapper.dtoToProduct(productDto));
     Product productSaved = productRepository.save(requestMapper.dtoToProduct(productDto));
     return responseMapper.productToDto(productSaved);
   }
 
+  @Transactional
   public ProductResponseDto update(Long id, ProductRequestDto productDto) {
     Product productUpdated = responseMapper.dtoToProduct(getById(id));
     requestMapper.updateProductDto(productDto, productUpdated);
-    isDuplicateProduct(productUpdated);
+    isDuplicateSku(productUpdated);
     return responseMapper.productToDto(productRepository.save(productUpdated));
   }
 
@@ -57,12 +60,21 @@ public class ProductService {
   }
   // Métodos auxiliares
 
-  private void isDuplicateProduct(Product product) {
-    Product findProduct = productRepository.findBySku(product.getSku());
+//  private void isDuplicateProduct(Product product) {
+//    Product findProduct = productRepository.findBySku(product.getSku());
+//
+//    if (findProduct != null && !Objects.equals(findProduct.getId(), product.getId())) {
+//      throw new RuntimeException(String.format("Produto com SKU: %s já existe", product.getSku()));
+//    }
+//  }
 
-    if (findProduct != null && !Objects.equals(findProduct.getId(), product.getId())) {
-      throw new RuntimeException(String.format("Produto com SKU: %s já existe", product.getSku()));
+  private void isDuplicateSku(Product product) {
+    boolean skuUsed = productRepository.findBySku(product.getSku())
+        .stream()
+        .anyMatch(productExist -> !productExist.equals(product));
+    if (skuUsed) {
+      throw new NegocioException(String.format("Já existe um Produto com SKU: %s cadastrado", product.getSku()));
     }
-
   }
+
 }
