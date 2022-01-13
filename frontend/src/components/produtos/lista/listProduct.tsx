@@ -43,19 +43,32 @@ export const ListProduct: NextPage = () => {
   }, [products]);
 
   const onDelete = async (id: any) => {
-    await service.deleteById(id).then(() => {
-      setMessages([
-        {
-          type: 'success',
-          message: `Produto com ID: ${id} excluído com sucesso!`,
-        },
-      ]);
+    if (confirm(`Excluir Produto com ID: ${id}?`)) {
+      await service
+        .deleteById(id)
+        .then(() => {
+          setMessages([
+            {
+              type: 'success',
+              message: `Produto com ID: ${id} excluído com sucesso!`,
+            },
+          ]);
 
-      const listProductsUpdated: ProductModel[] = listProducts.filter(
-        (p: ProductModel) => p.id !== id,
-      );
-      setListProducts(listProductsUpdated);
-    });
+          const listProductsUpdated: ProductModel[] = listProducts.filter(
+            (p: ProductModel) => p.id !== id,
+          );
+          setListProducts(listProductsUpdated);
+        })
+        .catch((error) => {
+          const { data } = error.response;
+          setMessages([
+            {
+              type: 'danger',
+              message: `ERRO: ${data.titulo}`,
+            },
+          ]);
+        });
+    }
   };
 
   return (
