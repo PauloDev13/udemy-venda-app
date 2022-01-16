@@ -16,10 +16,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(NegocioException.class)
   public ResponseEntity<Object> handleNegocio(NegocioException ex, WebRequest request) {
     HttpStatus status = HttpStatus.BAD_REQUEST;
-    CustomException customException = new CustomException();
-    customException.setStatus(status.value());
-    customException.setDataHora(LocalDateTime.now());
-    customException.setTitulo(ex.getMessage());
+    CustomException customException = new CustomException(
+        status.value(), LocalDateTime.now(), ex.getMessage()
+    );
 
     return handleExceptionInternal(ex, customException, new HttpHeaders(), status, request);
   }

@@ -39,6 +39,7 @@ export const FormProduct: NextPage = () => {
   const [description, setDescription] = useState('');
   const [id, setId] = useState('');
   const [createdAt, setCreatedAt] = useState('');
+  const [updatedAt, setUpdatedAt] = useState('');
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [errors, setErrors] = useState<Ierror>({});
 
@@ -52,13 +53,22 @@ export const FormProduct: NextPage = () => {
       service
         .getById(prodId)
         .then(
-          ({ id, sku, name, price, description, createdAt }: ProductModel) => {
+          ({
+            id,
+            sku,
+            name,
+            price,
+            description,
+            createdAt,
+            updatedAt,
+          }: ProductModel) => {
             setId(id ?? '');
             setSku(sku ?? '');
             setName(name ?? '');
             setPrice(convertToReal(`${price?.toFixed(2)}`));
             setDescription(description ?? '');
             setCreatedAt(createdAt ?? '');
+            setUpdatedAt(updatedAt ?? '');
           },
         );
     }
@@ -147,6 +157,13 @@ export const FormProduct: NextPage = () => {
             columnClasse="is-half"
             id="inputCreated"
             value={createdAt}
+            disabled
+          />
+          <Input
+            label="Data Atualização"
+            columnClasse="is-half"
+            id="inputUpdated"
+            value={updatedAt}
             disabled
           />
         </div>

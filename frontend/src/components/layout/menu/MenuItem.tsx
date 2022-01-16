@@ -6,17 +6,17 @@ interface MenuItemProps {
   label: string;
 }
 
-export const MenuItem: NextPage<MenuItemProps> = ({ href, label }) => {
+export const MenuItem: NextPage<MenuItemProps> = ({
+  href,
+  label,
+}: MenuItemProps) => {
   return (
     <li>
       {href && (
-        <Link href={href}>
+        <Link href={href} passHref>
           <a className="icon">{label}</a>
         </Link>
       )}
-      {/*<a href={href}>*/}
-      {/*  <span className="icon">{label}</span>*/}
-      {/*</a>*/}
     </li>
   );
 };

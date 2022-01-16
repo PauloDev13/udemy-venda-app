@@ -5,7 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Getter
@@ -30,12 +30,25 @@ public class Product {
   private BigDecimal price;
 
   @Column(name = "date_created")
-  private LocalDate createdAt;
+  private OffsetDateTime createdAt;
+
+  @Column(name = "date_updated")
+  private OffsetDateTime updatedAt;
 
   @PrePersist
   public void prePersist() {
-    setCreatedAt(LocalDate.now());
+    setCreatedAt(OffsetDateTime.now());
+    
+    if (getUpdatedAt() == null) {
+      setUpdatedAt(OffsetDateTime.now());
+    }
   }
+
+  @PreUpdate
+  public void preUpdate() {
+    setUpdatedAt(OffsetDateTime.now());
+  }
+
 
   @Override
   public boolean equals(Object o) {

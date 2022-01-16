@@ -1,14 +1,7 @@
 package com.devpgm.backend;
 
-import com.devpgm.backend.model.Product;
-import com.devpgm.backend.repository.ProductRepository;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
 
 @SpringBootApplication
 public class BackendApplication {

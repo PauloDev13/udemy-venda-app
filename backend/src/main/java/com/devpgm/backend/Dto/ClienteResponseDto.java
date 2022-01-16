@@ -6,22 +6,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class ProductResponseDto implements Serializable {
+public class ClienteResponseDto implements Serializable {
   private final Long id;
-  private final String sku;
   private final String name;
-  private final String description;
-  private final BigDecimal price;
+  private final String email;
+  private final String cpf;
+  private final String address;
+  private final String phone;
+
+  @JsonFormat(pattern = "dd/MM/yyyy")
+  private final LocalDate dateBirth;
 
   @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-  private OffsetDateTime createdAt;
-
-  @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-  private OffsetDateTime updatedAt;
+  private final OffsetDateTime dateRegister;
 }
