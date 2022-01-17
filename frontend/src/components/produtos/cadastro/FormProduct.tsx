@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 
 import { NextPage } from 'next';
 import Link from 'next/link';
@@ -175,7 +175,9 @@ export const FormProduct: NextPage = () => {
           id="inputSku"
           value={sku}
           error={errors.sku}
-          onChange={setSku}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setSku(e.target.value)
+          }
           placeholder="Digite o SKU do produto"
         />
         <Input
@@ -186,7 +188,9 @@ export const FormProduct: NextPage = () => {
           currency
           maxLength={16}
           error={errors.price}
-          onChange={setPrice}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setPrice(e.target.value)
+          }
           placeholder="Digite o preço do produto"
         />
       </div>
@@ -198,7 +202,9 @@ export const FormProduct: NextPage = () => {
           id="inputName"
           value={name}
           error={errors.name}
-          onChange={setName}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setName(e.target.value)
+          }
           placeholder="Digite o nome do produto"
         />
       </div>
@@ -211,7 +217,9 @@ export const FormProduct: NextPage = () => {
           <div className="control">
             <textarea
               value={description}
-              onChange={(event) => setDescription(event.target.value)}
+              onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
+                setDescription(event.target.value)
+              }
               className="textarea"
               id="inputDescricao"
               placeholder="Digite uma descrição detalhada do produto"
