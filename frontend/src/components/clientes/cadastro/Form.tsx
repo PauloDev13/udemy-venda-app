@@ -26,6 +26,11 @@ export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
     initialValues: { ...formSchema, ...cliente },
     onSubmit,
   });
+
+  const caixaAlta = (value: string): string => {
+    return value.toUpperCase();
+  };
+
   return (
     <form onSubmit={formik.handleSubmit}>
       {formik.values.id && (
@@ -55,6 +60,7 @@ export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
           name="name"
           autoComplete="off"
           columnClasse="is-full"
+          formatter={caixaAlta}
           value={formik.values.name}
           onChange={formik.handleChange}
         />

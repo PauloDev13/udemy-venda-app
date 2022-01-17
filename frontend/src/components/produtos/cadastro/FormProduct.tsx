@@ -8,7 +8,7 @@ import * as yup from 'yup';
 import { ProductModel } from '~/app/model/productModel';
 import { useProductService } from '~/app/service/ProductService';
 import { convertToBigdecimal, convertToReal } from '~/app/util/Converter';
-import { Input } from '~/components/common/input/Input';
+import { Input, InputMoney } from '~/components/common/input/Input';
 import { Ierror, IMessage } from '~/components/common/interfaces';
 import { Layout } from '~/components/layout/Layout';
 
@@ -180,12 +180,11 @@ export const FormProduct: NextPage = () => {
           }
           placeholder="Digite o SKU do produto"
         />
-        <Input
+        <InputMoney
           label="Preço *"
           columnClasse="is-half"
           id="inputPrice"
           value={price}
-          currency
           maxLength={16}
           error={errors.price}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
