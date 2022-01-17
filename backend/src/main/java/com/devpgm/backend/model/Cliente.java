@@ -1,6 +1,5 @@
 package com.devpgm.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,21 +18,22 @@ public class Cliente {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 100)
   private String name;
 
+  @Column(length = 30)
   private String email;
 
-  @Column(nullable = false)
+  @Column(nullable = false, length = 15)
   private String cpf;
 
   @Column(nullable = false)
   private String address;
 
+  @Column(length = 15)
   private String phone;
 
   @Column(nullable = false)
-  @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate dateBirth;
 
   private OffsetDateTime dateRegister;
