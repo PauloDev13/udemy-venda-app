@@ -3,7 +3,12 @@ import { NextPage } from 'next';
 import Link from 'next/link';
 
 import { ClienteModel } from '~/app/model/clienteModel';
-import { Input } from '~/components/common/input/Input';
+import {
+  Input,
+  InputCpf,
+  InputDate,
+  InputPhone,
+} from '~/components/common/input/Input';
 
 type FormProps = {
   cliente: ClienteModel;
@@ -26,10 +31,6 @@ export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
     initialValues: { ...formSchema, ...cliente },
     onSubmit,
   });
-
-  const caixaAlta = (value: string): string => {
-    return value.toUpperCase();
-  };
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -60,13 +61,12 @@ export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
           name="name"
           autoComplete="off"
           columnClasse="is-full"
-          formatter={caixaAlta}
           value={formik.values.name}
           onChange={formik.handleChange}
         />
       </div>
       <div className="columns">
-        <Input
+        <InputCpf
           label="CPF: *"
           id="cpf"
           name="cpf"
@@ -75,7 +75,7 @@ export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
           value={formik.values.cpf}
           onChange={formik.handleChange}
         />
-        <Input
+        <InputDate
           label="Data Nascimento: *"
           id="dateBirth"
           name="dateBirth"
@@ -106,7 +106,7 @@ export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
           value={formik.values.email}
           onChange={formik.handleChange}
         />
-        <Input
+        <InputPhone
           label="Telefone: *"
           id="phone"
           name="phone"
