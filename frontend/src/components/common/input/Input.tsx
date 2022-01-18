@@ -74,7 +74,7 @@ export const InputDate: NextPage<InputProps> = (props: InputProps) => {
       return date;
     }
 
-    if (size <= 4) {
+    if (size <= 5) {
       return date.substring(0, 2) + '/' + date.substring(2, 4);
     }
 
