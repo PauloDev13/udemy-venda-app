@@ -1,3 +1,7 @@
+import { FormatUtils } from '@4us-dev/utils';
+
+const formatUtils = new FormatUtils();
+
 export const convertToBigdecimal = (value: any): number => {
   if (!value) {
     return 0;
@@ -18,4 +22,34 @@ export const convertToReal = (value: any): any => {
   }
   const r = m.reverse().join('');
   return r.substring(0, r.lastIndexOf('.')) + ',' + v[1];
+};
+
+export const formatDate = (value: string): any => {
+  if (!value) {
+    return '';
+  }
+  const date = formatUtils.formatOnlyIntegers(value);
+  const size = value.length;
+
+  if (size <= 2) {
+    return date;
+  }
+
+  if (size <= 5) {
+    return date.substring(0, 2).concat('/', date.substring(2, 4));
+  }
+
+  if (size <= 8) {
+    return date
+      .substring(0, 2)
+      .concat('/', date.substring(2, 4), '/', date.substring(4, 8));
+  }
+};
+
+export const formatCPF = (value: string) => {
+  return formatUtils.formatCPF(value);
+};
+
+export const formatPhone = (value: string) => {
+  return formatUtils.formatPhone(value);
 };
