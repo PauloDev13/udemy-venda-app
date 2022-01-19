@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios';
 
 import { httpClient } from '~/app/http/axios';
 import { ClienteModel } from '~/app/model/clienteModel';
+import { Page } from '~/app/model/Page';
 
 const resourceUrl = '/api/clientes';
 
@@ -32,6 +33,18 @@ export const useClienteService = () => {
     return response.data;
   };
 
+  const getAllPageable = async (
+    name = '',
+    cpf = '',
+    page = 0,
+    size = 5,
+  ): Promise<Page<ClienteModel>> => {
+    const response: AxiosResponse<Page<ClienteModel>> = await httpClient.get(
+      `${resourceUrl}/?name=${name}&cpf=${cpf}&page=${page}&size=${size}`,
+    );
+    return response.data;
+  };
+
   const getById = async (id: any): Promise<ClienteModel> => {
     const { data }: AxiosResponse<ClienteModel> = await httpClient.get(
       `${resourceUrl}/${id}`,
@@ -50,6 +63,7 @@ export const useClienteService = () => {
   return {
     save,
     getAll,
+    getAllPageable,
     getById,
     deleteById,
     update,
