@@ -4,6 +4,8 @@ import com.devpgm.backend.exceptionhandler.NegocioException;
 import com.devpgm.backend.model.Cliente;
 import com.devpgm.backend.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,10 @@ public class ClienteService {
 
   public List<Cliente> listAllClientes() {
     return clienteRepository.findAll();
+  }
+
+  public Page<Cliente> listAllClientesPageable(String name, String cpf, Pageable pageable) {
+    return clienteRepository.buscarPorNomeCpf("%" + name + "%", "%" + cpf + "%", pageable);
   }
 
   public Cliente findClienteById(Long id) {

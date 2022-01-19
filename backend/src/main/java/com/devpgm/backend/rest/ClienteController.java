@@ -7,12 +7,11 @@ import com.devpgm.backend.mapper.ClienteResponseMapper;
 import com.devpgm.backend.model.Cliente;
 import com.devpgm.backend.service.ClienteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -25,13 +24,24 @@ public class ClienteController {
 
 
   @GetMapping
-  public ResponseEntity<List<ClienteResponseDto>> getAll() {
-    List<ClienteResponseDto> clientesDto = clienteService.listAllClientes()
-        .stream()
-        .map(responseMapper::clienteToDto)
-        .collect(Collectors.toList());
+  public ResponseEntity<Page<ClienteResponseDto>> getAll(
+      @RequestParam(required = false, defaultValue = "") String name,
+      @RequestParam(required = false, defaultValue = "") String cpf,
+      Pageable pageable) {
+    Page<ClienteResponseDto> clientesDto = clienteService.listAllClientesPageable(name, cpf, pageable)
+        .map(responseMapper::clienteToDto);
     return new ResponseEntity<>(clientesDto, HttpStatus.OK);
   }
+
+//  @GetMapping
+//  public ResponseEntity<List<ClienteResponseDto>> getAll() {
+//    List<ClienteResponseDto> clientesDto = clienteService.listAllClientes()
+//        .stream()
+//        .map(responseMapper::clienteToDto)
+//        .collect(Collectors.toList());
+//    return new ResponseEntity<>(clientesDto, HttpStatus.OK);
+//  }
+
 
   @GetMapping("{id}")
   public ResponseEntity<ClienteResponseDto> getClienteById(@PathVariable Long id) {
