@@ -1,6 +1,12 @@
+import { useEffect, useState } from 'react';
+
 import { useFormik } from 'formik';
 import { NextPage } from 'next';
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
 
+import { ClienteModel } from '~/app/model/clienteModel';
+import { useClienteService } from '~/app/service/ClienteService';
 import { Input, InputCpf } from '~/components/common/input/Input';
 import { Layout } from '~/components/layout/Layout';
 
@@ -10,6 +16,15 @@ interface SearchFilter {
 }
 
 export const ListCliente: NextPage = () => {
+  const [clientes, setClientes] = useState<ClienteModel[]>([]);
+  const service = useClienteService();
+
+  useEffect(() => {
+    service.getAll().then((response) => {
+      setClientes(response);
+    });
+  }, []);
+
   const handleSubmit = (filter: SearchFilter) => {
     console.log(filter);
   };
@@ -54,6 +69,17 @@ export const ListCliente: NextPage = () => {
           </div>
         </div>
       </form>
+      <br />
+      <div className="columns">
+        <div className="is-full">
+          <DataTable value={clientes} size="small">
+            <Column field="id" header="Código" />
+            <Column field="name" header="Nome" />
+            <Column field="cpf" header="CPF" />
+            <Column field="email" header="Email" />
+          </DataTable>
+        </div>
+      </div>
     </Layout>
   );
 };
