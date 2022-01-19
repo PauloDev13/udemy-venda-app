@@ -53,3 +53,9 @@ export const formatCPF = (value: string) => {
 export const formatPhone = (value: string) => {
   return formatUtils.formatPhone(value);
 };
+
+export const convertDate = (value: string) => {
+  return value
+    .substring(6, 10)
+    .concat('-', value.substring(3, 5).concat('-', value.substring(0, 2)));
+};

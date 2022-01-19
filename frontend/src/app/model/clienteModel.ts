@@ -6,5 +6,5 @@ export interface ClienteModel {
   address?: string;
   phone?: string;
   dateBirth?: string;
-  createdAt?: string;
+  dateRegister?: string;
 }

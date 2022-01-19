@@ -1,8 +1,8 @@
-import { useFormik } from 'formik';
 import { NextPage } from 'next';
 import Link from 'next/link';
 
 import { ClienteModel } from '~/app/model/clienteModel';
+import { formikCliente } from '~/components/clientes/cadastro/validationSchema';
 import {
   Input,
   InputCpf,
@@ -15,22 +15,25 @@ type FormProps = {
   onSubmit: (cliente: ClienteModel) => void;
 };
 
-const formSchema: ClienteModel = {
-  id: '',
-  name: '',
-  email: '',
-  cpf: '',
-  address: '',
-  phone: '',
-  dateBirth: '',
-  createdAt: '',
-};
+// const formSchema: ClienteModel = {
+//   id: '',
+//   name: '',
+//   email: '',
+//   cpf: '',
+//   address: '',
+//   phone: '',
+//   dateBirth: '',
+//   dateRegister: '',
+// };
 
 export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
-  const formik = useFormik<ClienteModel>({
-    initialValues: { ...formSchema, ...cliente },
-    onSubmit,
-  });
+  const formik = formikCliente(cliente, onSubmit);
+  // const formik = useFormik<ClienteModel>({
+  //   initialValues: { ...formSchema, ...cliente },
+  //   onSubmit,
+  //   enableReinitialize: true,
+  //   validationSchema,
+  // });
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -50,7 +53,7 @@ export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
             name="createdAt"
             disabled
             columnClasse="is-half"
-            value={formik.values.createdAt}
+            value={formik.values.dateRegister}
           />
         </div>
       )}
@@ -62,6 +65,7 @@ export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
           autoComplete="off"
           columnClasse="is-full"
           value={formik.values.name}
+          error={formik.errors.name}
           onChange={formik.handleChange}
         />
       </div>
@@ -73,6 +77,7 @@ export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
           autoComplete="off"
           columnClasse="is-half"
           value={formik.values.cpf}
+          error={formik.errors.cpf}
           onChange={formik.handleChange}
         />
         <InputDate
@@ -82,6 +87,7 @@ export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
           autoComplete="off"
           columnClasse="is-half"
           value={formik.values.dateBirth}
+          error={formik.errors.dateBirth}
           onChange={formik.handleChange}
         />
       </div>
@@ -93,6 +99,7 @@ export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
           autoComplete="off"
           columnClasse="is-full"
           value={formik.values.address}
+          error={formik.errors.address}
           onChange={formik.handleChange}
         />
       </div>
@@ -104,6 +111,7 @@ export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
           autoComplete="off"
           columnClasse="is-half"
           value={formik.values.email}
+          error={formik.errors.email}
           onChange={formik.handleChange}
         />
         <InputPhone
@@ -113,6 +121,7 @@ export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
           autoComplete="off"
           columnClasse="is-half"
           value={formik.values.phone}
+          error={formik.errors.phone}
           onChange={formik.handleChange}
         />
       </div>
