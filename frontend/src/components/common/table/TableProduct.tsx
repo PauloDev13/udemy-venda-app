@@ -1,5 +1,12 @@
+import React from 'react';
+
+import { Button } from 'primereact/button';
+import { Column } from 'primereact/column';
+import { confirmDialog } from 'primereact/confirmdialog';
+import { DataTable } from 'primereact/datatable';
+
+import { ClienteModel } from '~/app/model/clienteModel';
 import { ProductModel } from '~/app/model/productModel';
-import { TableProductRow } from '~/components/common/table/TableProductRow';
 
 type TableProductProps = {
   products: ProductModel[];
@@ -12,27 +19,43 @@ export const TableProduct = ({
   onEdit,
   onDelete,
 }: TableProductProps) => {
+  const actionTemplate = (registro: ClienteModel) => {
+    return (
+      <div>
+        <Button
+          label="Editar"
+          className="p-button-text p-button-sm"
+          onClick={() => onEdit(registro.id)}
+        />
+        <Button
+          label="Excluir"
+          className="p-button-text p-button-danger p-button-sm"
+          onClick={() => {
+            confirmDialog({
+              message: `Confirma a exclusão de ${registro.name}?`,
+              header: 'Confirmação',
+              acceptClassName: 'p-button-danger',
+              acceptLabel: 'Sim',
+              rejectLabel: 'Não',
+              accept: () => onDelete(registro.id),
+            });
+          }}
+        />
+      </div>
+    );
+  };
   return (
-    <table className="table is-striped is-hovered">
-      <thead>
-        <tr>
-          <th>Código</th>
-          <th>SKU</th>
-          <th>Nome</th>
-          <th>price</th>
-          <th>Opções</th>
-        </tr>
-      </thead>
-      <tbody>
-        {products.map((product) => (
-          <TableProductRow
-            key={product.id}
-            product={product}
-            onEdit={onEdit}
-            onDelete={onDelete}
-          />
-        ))}
-      </tbody>
-    </table>
+    <DataTable
+      value={products}
+      paginator
+      rows={5}
+      size="small"
+      alwaysShowPaginator={false}
+    >
+      <Column header="Código" field="id" />
+      <Column header="SKU" field="sku" />
+      <Column header="price" field="price" />
+      <Column header="Opções" body={actionTemplate} />
+    </DataTable>
   );
 };
