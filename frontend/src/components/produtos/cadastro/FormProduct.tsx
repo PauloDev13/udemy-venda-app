@@ -231,13 +231,13 @@ export const FormProduct: NextPage = () => {
       </div>
       <div className="field is-grouped">
         <div className="control">
-          <button onClick={submit} className="button is-link">
+          <button onClick={submit} className="button is-link is-small">
             {id ? 'Atualizar' : 'Salvar'}
           </button>
         </div>
         <div className="control">
           <Link href={'/consultas/produtos'}>
-            <button className="button is-link is-light">Listar</button>
+            <button className="button is-link is-light is-small">Listar</button>
           </Link>
         </div>
       </div>

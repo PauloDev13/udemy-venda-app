@@ -1,8 +1,12 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useFormik } from 'formik';
 import { NextPage } from 'next';
+import Link from 'next/link';
+import router from 'next/router';
+import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
+import { confirmDialog } from 'primereact/confirmdialog';
 import { DataTable, DataTablePageParams } from 'primereact/datatable';
 
 import { ClienteModel } from '~/app/model/clienteModel';
@@ -30,11 +34,11 @@ export const ListCliente: NextPage = () => {
 
   const service = useClienteService();
 
-  const handleSubmit = (event: any) => {
-    handlePage(event);
+  const handleSubmit = () => {
+    handlePage(null);
   };
 
-  const handlePage = (event: DataTablePageParams) => {
+  const handlePage = (event: DataTablePageParams | any) => {
     setLoading(true);
     service
       .getAllPageable(filter.nome, filter.cpf, event?.page, event?.rows)
@@ -56,15 +60,40 @@ export const ListCliente: NextPage = () => {
     onSubmit: handleSubmit,
   });
 
+  const handleDelete = (id: string) => {
+    service.deleteById(id).then(() => {
+      handlePage(null);
+    });
+  };
+
+  const actionTemplate = (registro: ClienteModel) => {
+    return (
+      <div>
+        <Button
+          label="Editar"
+          className="p-button-text p-button-sm"
+          onClick={() => router.push(`/cadastros/clientes?id=${registro.id}`)}
+        />
+        <Button
+          label="Excluir"
+          className="p-button-text p-button-danger p-button-sm"
+          onClick={() => {
+            confirmDialog({
+              message: `Confirma a exclusão de ${registro.name}?`,
+              header: 'Confirmação',
+              acceptClassName: 'p-button-danger',
+              acceptLabel: 'Sim',
+              rejectLabel: 'Não',
+              accept: () => handleDelete(registro.id as string),
+            });
+          }}
+        />
+      </div>
+    );
+  };
+
   useEffect(() => {
-    handleSubmit(null);
-    // setLoading(true);
-    // service
-    //   .getAllPageable()
-    //   .then((response) => {
-    //     setClientes({ ...response, page: -1 });
-    //   })
-    //   .finally(() => setLoading(false));
+    handlePage(null);
   }, []);
 
   return (
@@ -90,9 +119,14 @@ export const ListCliente: NextPage = () => {
         </div>
         <div className="field is-grouped">
           <div className="control">
-            <button type="submit" className="button is-link">
+            <button type="submit" className="button is-link is-small">
               Consultar
             </button>
+          </div>
+          <div className="control">
+            <Link href={'/cadastros/clientes'} passHref>
+              <button className="button is-success is-small">Novo</button>
+            </Link>
           </div>
         </div>
       </form>
@@ -115,6 +149,7 @@ export const ListCliente: NextPage = () => {
             <Column field="name" header="Nome" />
             <Column field="cpf" header="CPF" />
             <Column field="email" header="Email" />
+            <Column header="Opções" body={actionTemplate} />
           </DataTable>
         </div>
       </div>

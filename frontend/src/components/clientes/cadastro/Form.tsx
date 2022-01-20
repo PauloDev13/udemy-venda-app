@@ -15,25 +15,8 @@ type FormProps = {
   onSubmit: (cliente: ClienteModel) => void;
 };
 
-// const formSchema: ClienteModel = {
-//   id: '',
-//   name: '',
-//   email: '',
-//   cpf: '',
-//   address: '',
-//   phone: '',
-//   dateBirth: '',
-//   dateRegister: '',
-// };
-
 export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
   const formik = formikCliente(cliente, onSubmit);
-  // const formik = useFormik<ClienteModel>({
-  //   initialValues: { ...formSchema, ...cliente },
-  //   onSubmit,
-  //   enableReinitialize: true,
-  //   validationSchema,
-  // });
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -127,13 +110,13 @@ export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
       </div>
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link">
+          <button type="submit" className="button is-link is-small">
             {formik.values.id ? 'Atualizar' : 'Salvar'}
           </button>
         </div>
         <div className="control">
           <Link href={'/consultas/clientes'}>
-            <button className="button is-link is-light">Listar</button>
+            <button className="button is-link is-light is-small">Listar</button>
           </Link>
         </div>
       </div>
