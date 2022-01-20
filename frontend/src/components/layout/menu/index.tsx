@@ -10,7 +10,7 @@ export const Menu: NextPage = () => {
         <MenuItem href="/" label="Home" />
         <MenuItem href="/consultas/produtos" label="Produtos" />
         <MenuItem href="/consultas/clientes" label="Clientes" />
-        <MenuItem href="/" label="Config" />
+        <MenuItem href="/cadastros/vendas/nova" label="Vendas" />
         <MenuItem href="/" label="Sair" />
       </ul>
     </aside>
