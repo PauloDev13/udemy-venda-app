@@ -1,7 +1,9 @@
+import React from 'react';
+
 import { NextPage } from 'next';
 
 // interface LoaderProps {
-//   show: boolean;
+//   show?: boolean;
 // }
 
 export const Loader: NextPage = () => {

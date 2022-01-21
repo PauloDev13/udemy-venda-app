@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useFormik } from 'formik';
 import { NextPage } from 'next';
@@ -35,10 +35,14 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
   const clienteService = useClienteService();
   const produtoService = useProductService();
 
-  const [codigoProduto, setCodigoProduto] = useState<string>('');
   const [message, setMessage] = useState<string>('');
+  const [codigoProduto, setCodigoProduto] = useState<string>('');
   const [qtdProduto, setQtdProduto] = useState<number>(0);
   const [produto, setProduto] = useState<ProductModel>();
+  const [listaProdutos, setListaProdutos] = useState<ProductModel[]>([]);
+  const [listaFiltradaProdutos, setListFiltradaProdutos] = useState<
+    ProductModel[]
+  >([]);
   const [clientes, setClientes] = useState<Page<ClienteModel>>({
     content: [],
     page: 0,
@@ -49,6 +53,7 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
 
   const handleClienteAutocomplete = (e: AutoCompleteCompleteMethodParams) => {
     const name = e.query;
+
     clienteService.getAllPageable(name, '', 0, 20).then((response) => {
       setClientes(response);
     });
@@ -58,6 +63,28 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
     const clienteSelecionado: ClienteModel = e.value;
     formik.setFieldValue('cliente', clienteSelecionado);
   };
+
+  const handleProdutoAutocomplete = async (
+    e: AutoCompleteCompleteMethodParams,
+  ) => {
+    const name = e.query;
+
+    // if (!listaProdutos.length) {
+    //   const produtosEncontrados = await produtoService.getAll();
+    //   setListaProdutos(produtosEncontrados);
+    // }
+
+    const produtosFiltrados = listaProdutos.filter((produto: ProductModel) => {
+      return produto.name?.toUpperCase().includes(name.toUpperCase());
+    });
+
+    setListFiltradaProdutos(produtosFiltrados);
+  };
+
+  // const handleProdutoChange = (e: AutoCompleteChangeParams) => {
+  //   const produtoSelecionado: ProductModel = e.value;
+  //   setProduto(produtoSelecionado);
+  // };
 
   const handleCodigoProdutoSelect = () => {
     if (codigoProduto) {
@@ -117,6 +144,14 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
     initialValues: formSchema,
   });
 
+  useEffect(() => {
+    if (!listaProdutos.length) {
+      produtoService.getAll().then((response) => {
+        setListaProdutos(response);
+      });
+    }
+  }, []);
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="p-fluid">
@@ -152,8 +187,13 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
           <div className="field md:col-6">
             <AutoComplete
               className="p-inputtext-sm"
-              value={produto}
+              id="produto"
+              name="produto"
               field="name"
+              value={produto}
+              suggestions={listaFiltradaProdutos}
+              completeMethod={handleProdutoAutocomplete}
+              onChange={(e) => setProduto(e.value)}
             />
           </div>
           <div className="field col-12 md:col-2">
@@ -179,8 +219,8 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
           <div className="field col-12">
             <DataTable
               value={formik.values.itens}
-              header="Itens da venda"
               size="small"
+              emptyMessage="Não há itens na venda"
             >
               <Column field="produto.id" header="Código" />
               <Column field="produto.sku" header="SKU" />
