@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useFormik } from 'formik';
 import { NextPage } from 'next';
@@ -11,6 +11,7 @@ import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { Dialog } from 'primereact/dialog';
+import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 
 import { ClienteModel } from '~/app/model/clienteModel';
@@ -19,6 +20,12 @@ import { ProductModel } from '~/app/model/productModel';
 import { ItemVenda, VendaModel } from '~/app/model/vendaModel';
 import { useClienteService } from '~/app/service/ClienteService';
 import { useProductService } from '~/app/service/ProductService';
+import { validationSchema } from '~/components/vendas/cadastro/validationSchema';
+
+const formatMoney = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL',
+});
 
 interface VendasFormProps {
   onSubmit: (venda: VendaModel) => void;
@@ -34,6 +41,8 @@ const formSchema: VendaModel = {
 export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
   const clienteService = useClienteService();
   const produtoService = useProductService();
+
+  const formaPagamento = ['DINHEIRO', 'PIX', 'CARTÃO DE CRÉDITO'];
 
   const [message, setMessage] = useState<string>('');
   const [codigoProduto, setCodigoProduto] = useState<string>('');
@@ -105,6 +114,18 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
     }
   };
 
+  const calculaTotalVenda = () => {
+    const totais = formik.values.itens?.map(
+      (iv: ItemVenda) => Number(iv.produto.price) * iv.quantidade,
+    );
+
+    if (totais?.length) {
+      return totais.reduce(
+        (somaAtual = 0, valorItemAtual) => somaAtual + Number(valorItemAtual),
+      );
+    }
+  };
+
   const handleAddProduto = () => {
     const itensAdicionados = formik.values.itens;
 
@@ -129,6 +150,29 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
     setCodigoProduto('');
     setQtdProduto(0);
     setProduto(undefined);
+    // const totalVenda = calculaTotalVenda();
+    formik.setFieldValue('totalVenda', calculaTotalVenda());
+  };
+
+  const handleRemoverProduto = (id: string) => {
+    const result = formik.values.itens?.filter(
+      (iv: ItemVenda) => iv.produto.id !== id,
+    );
+    formik.setFieldValue('itens', result);
+    formik.setFieldValue('totalVenda', calculaTotalVenda());
+  };
+
+  const actionTemplate = (itens: ItemVenda) => {
+    return (
+      <div>
+        <Button
+          type="button"
+          label="Excluir"
+          className="p-button-text p-button-sm"
+          onClick={() => handleRemoverProduto(itens.produto.id!)}
+        />
+      </div>
+    );
   };
 
   const disableAddProdutoButton = () => {
@@ -142,6 +186,7 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
   const formik = useFormik({
     onSubmit,
     initialValues: formSchema,
+    validationSchema: validationSchema,
   });
 
   useEffect(() => {
@@ -168,12 +213,16 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
               completeMethod={handleClienteAutocomplete}
               onChange={handleClienteChange}
             />
+            <small className="p-error block">
+              {formik.touched && formik.errors.cliente}
+            </small>
           </div>
         </div>
         <div className="grid">
           <div className="field col-12 md:col-2">
             <span className="p-float-label">
               <InputText
+                type="number"
                 className="p-inputtext-sm"
                 id="codigo"
                 autoFocus
@@ -220,23 +269,75 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
             <DataTable
               value={formik.values.itens}
               size="small"
-              emptyMessage="Não há itens na venda"
+              emptyMessage={
+                formik.errors.itens && (
+                  <small className="p-error block">
+                    Adicione pelo menos um item na venda
+                  </small>
+                )
+              }
             >
               <Column field="produto.id" header="Código" />
               <Column field="produto.sku" header="SKU" />
               <Column field="produto.name" header="Nome" />
-              <Column field="produto.price" header="Preço Unit" />
+              <Column
+                style={{ textAlign: 'center' }}
+                field="produto.price"
+                header="Preço Unit"
+              />
               <Column field="quantidade" header="Qtd" />
               <Column
+                style={{ textAlign: 'right' }}
                 header="Total"
                 body={(iv: ItemVenda) => {
-                  return <div>{iv.produto.price! * iv.quantidade}</div>;
+                  return (
+                    <div>
+                      {formatMoney.format(iv.produto.price! * iv.quantidade)}
+                    </div>
+                  );
                 }}
               />
+              <Column header="Opção" body={actionTemplate} />
             </DataTable>
           </div>
+          <div className="field col-6">
+            <label htmlFor="formaPagamento">Forma de Pagamento: *</label>
+            <Dropdown
+              id="formaPagamento"
+              style={{ height: '45px' }}
+              className="p-inputtext-sm"
+              name="formaPagamento"
+              options={formaPagamento}
+              value={formik.values.formaPagamento}
+              onChange={(e) => formik.setFieldValue('formaPagamento', e.value)}
+              placeholder="Selecione forma de pagamento"
+            />
+            <small className="p-error block">
+              {formik.touched && formik.errors.formaPagamento}
+            </small>
+          </div>
+          <div className="field col-2">
+            <label htmlFor="totalItens">Itens:</label>
+            <InputText
+              id="totalItens"
+              style={{ textAlign: 'center' }}
+              className="p-inputtext-sm"
+              name="totalItens"
+              value={formik.values.itens?.length}
+            />
+          </div>
+          <div className="field col-4">
+            <label htmlFor="totalItens">Total Venda R$:</label>
+            <InputText
+              id="total"
+              style={{ textAlign: 'right' }}
+              className="p-inputtext-sm"
+              name="total"
+              value={formatMoney.format(formik.values.totalVenda)}
+            />
+          </div>
         </div>
-        <Button label="Finalizar" type="submit" />
+        <Button label="Finalizar" type="submit" disabled={!formik.isValid} />
       </div>
       <Dialog
         header="ATENÇÃO!!"
