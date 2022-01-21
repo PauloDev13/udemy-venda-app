@@ -8,12 +8,17 @@ import {
   AutoCompleteCompleteMethodParams,
 } from 'primereact/autocomplete';
 import { Button } from 'primereact/button';
+import { Column } from 'primereact/column';
+import { DataTable } from 'primereact/datatable';
+import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 
 import { ClienteModel } from '~/app/model/clienteModel';
 import { Page } from '~/app/model/Page';
-import { VendaModel } from '~/app/model/vendaModel';
+import { ProductModel } from '~/app/model/productModel';
+import { ItemVenda, VendaModel } from '~/app/model/vendaModel';
 import { useClienteService } from '~/app/service/ClienteService';
+import { useProductService } from '~/app/service/ProductService';
 
 interface VendasFormProps {
   onSubmit: (venda: VendaModel) => void;
@@ -21,15 +26,19 @@ interface VendasFormProps {
 
 const formSchema: VendaModel = {
   cliente: undefined,
-  produtos: [],
+  itens: [],
   formaPagamento: '',
   totalVenda: 0,
 };
 
 export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
-  const service = useClienteService();
+  const clienteService = useClienteService();
+  const produtoService = useProductService();
 
   const [codigoProduto, setCodigoProduto] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
+  const [qtdProduto, setQtdProduto] = useState<number>(0);
+  const [produto, setProduto] = useState<ProductModel>();
   const [clientes, setClientes] = useState<Page<ClienteModel>>({
     content: [],
     page: 0,
@@ -40,7 +49,7 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
 
   const handleClienteAutocomplete = (e: AutoCompleteCompleteMethodParams) => {
     const name = e.query;
-    service.getAllPageable(name, '', 0, 20).then((response) => {
+    clienteService.getAllPageable(name, '', 0, 20).then((response) => {
       setClientes(response);
     });
   };
@@ -51,13 +60,63 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
   };
 
   const handleCodigoProdutoSelect = () => {
-    console.log(codigoProduto);
+    if (codigoProduto) {
+      produtoService
+        .getById(codigoProduto)
+        .then((response) => {
+          setProduto(response);
+        })
+        .catch((error) => {
+          setMessage(error.response.data.titulo);
+          setCodigoProduto('');
+          setProduto(undefined);
+          setQtdProduto(0);
+        });
+    } else {
+      setProduto(undefined);
+      setQtdProduto(0);
+    }
+  };
+
+  const handleAddProduto = () => {
+    const itensAdicionados = formik.values.itens;
+
+    const isExistItemVenda = itensAdicionados?.some((iv: ItemVenda) => {
+      return iv.produto.id === produto?.id;
+    });
+
+    if (isExistItemVenda) {
+      itensAdicionados?.forEach((iv: ItemVenda) => {
+        if (iv.produto.id === produto?.id) {
+          iv.quantidade = iv.quantidade + qtdProduto;
+        }
+      });
+    } else {
+      produto &&
+        qtdProduto &&
+        itensAdicionados?.push({
+          produto,
+          quantidade: qtdProduto,
+        });
+    }
+    setCodigoProduto('');
+    setQtdProduto(0);
+    setProduto(undefined);
+  };
+
+  const disableAddProdutoButton = () => {
+    return !produto || !qtdProduto;
+  };
+
+  const handleDialogFooter = () => {
+    return <Button label="Ok" onClick={() => setMessage('')} autoFocus />;
   };
 
   const formik = useFormik({
     onSubmit,
     initialValues: formSchema,
   });
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className="p-fluid">
@@ -82,6 +141,7 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
               <InputText
                 className="p-inputtext-sm"
                 id="codigo"
+                autoFocus
                 value={codigoProduto}
                 onBlur={handleCodigoProdutoSelect}
                 onChange={(e) => setCodigoProduto(e.target.value)}
@@ -90,20 +150,63 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
             </span>
           </div>
           <div className="field md:col-6">
-            <AutoComplete className="p-inputtext-sm" />
+            <AutoComplete
+              className="p-inputtext-sm"
+              value={produto}
+              field="name"
+            />
           </div>
           <div className="field col-12 md:col-2">
             <span className="p-float-label">
-              <InputText id="codigo" className="p-inputtext-sm" />
+              <InputText
+                id="codigo"
+                className="p-inputtext-sm"
+                value={qtdProduto}
+                onChange={(e) => setQtdProduto(+e.target.value)}
+              />
               <label htmlFor="codigo">QTD</label>
             </span>
           </div>
           <div className="field col-12 md:col-2">
-            <Button label="Adicionar" className="p-button" />
+            <Button
+              type="button"
+              label="Adicionar"
+              className="p-button"
+              disabled={disableAddProdutoButton()}
+              onClick={handleAddProduto}
+            />
+          </div>
+          <div className="field col-12">
+            <DataTable
+              value={formik.values.itens}
+              header="Itens da venda"
+              size="small"
+            >
+              <Column field="produto.id" header="Código" />
+              <Column field="produto.sku" header="SKU" />
+              <Column field="produto.name" header="Nome" />
+              <Column field="produto.price" header="Preço Unit" />
+              <Column field="quantidade" header="Qtd" />
+              <Column
+                header="Total"
+                body={(iv: ItemVenda) => {
+                  return <div>{iv.produto.price! * iv.quantidade}</div>;
+                }}
+              />
+            </DataTable>
           </div>
         </div>
         <Button label="Finalizar" type="submit" />
       </div>
+      <Dialog
+        header="ATENÇÃO!!"
+        position="top"
+        visible={!!message}
+        footer={handleDialogFooter}
+        onHide={() => setMessage('')}
+      >
+        {message}
+      </Dialog>
     </form>
   );
 };

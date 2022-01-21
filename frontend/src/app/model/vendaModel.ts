@@ -4,7 +4,12 @@ import { ClienteModel } from './clienteModel';
 
 export interface VendaModel {
   cliente?: ClienteModel;
-  produtos?: ProductModel[];
+  itens?: ItemVenda[];
   formaPagamento?: string;
   totalVenda: number;
+}
+
+export interface ItemVenda {
+  produto: ProductModel;
+  quantidade: number;
 }
