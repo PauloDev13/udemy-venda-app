@@ -19,7 +19,7 @@ export const FormCliente: NextPage = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
 
   const handleSubmit = (cliente: ClienteModel) => {
-    cliente.dateBirth = convertDate(cliente.dateBirth as string);
+    cliente.dateBirth = convertDate(cliente.dateBirth ?? '');
 
     if (cliente.id) {
       service

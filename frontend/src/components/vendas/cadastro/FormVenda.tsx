@@ -78,22 +78,12 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
   ) => {
     const name = e.query;
 
-    // if (!listaProdutos.length) {
-    //   const produtosEncontrados = await produtoService.getAll();
-    //   setListaProdutos(produtosEncontrados);
-    // }
-
     const produtosFiltrados = listaProdutos.filter((produto: ProductModel) => {
       return produto.name?.toUpperCase().includes(name.toUpperCase());
     });
 
     setListFiltradaProdutos(produtosFiltrados);
   };
-
-  // const handleProdutoChange = (e: AutoCompleteChangeParams) => {
-  //   const produtoSelecionado: ProductModel = e.value;
-  //   setProduto(produtoSelecionado);
-  // };
 
   const handleCodigoProdutoSelect = () => {
     if (codigoProduto) {
@@ -114,27 +104,27 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
     }
   };
 
-  const calculaTotalVenda = () => {
-    const totais = formik.values.itens?.map(
-      (iv: ItemVenda) => Number(iv.produto.price) * iv.quantidade,
-    );
+  const calculaTotalVenda = (itens: ItemVenda[]) => {
+    const totais =
+      itens.map((iv: ItemVenda) => Number(iv.produto.price) * iv.quantidade) ??
+      [];
 
-    if (totais?.length) {
+    if (totais.length) {
       return totais.reduce(
-        (somaAtual = 0, valorItemAtual) => somaAtual + Number(valorItemAtual),
+        (somaAtual = 0, valorItemAtual) => somaAtual + valorItemAtual,
       );
     }
   };
 
   const handleAddProduto = () => {
-    const itensAdicionados = formik.values.itens;
+    const itensAdicionados = formik.values.itens ?? [];
 
-    const isExistItemVenda = itensAdicionados?.some((iv: ItemVenda) => {
+    const isExistItemVenda = itensAdicionados.some((iv: ItemVenda) => {
       return iv.produto.id === produto?.id;
     });
 
     if (isExistItemVenda) {
-      itensAdicionados?.forEach((iv: ItemVenda) => {
+      itensAdicionados.forEach((iv: ItemVenda) => {
         if (iv.produto.id === produto?.id) {
           iv.quantidade = iv.quantidade + qtdProduto;
         }
@@ -142,7 +132,7 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
     } else {
       produto &&
         qtdProduto &&
-        itensAdicionados?.push({
+        itensAdicionados.push({
           produto,
           quantidade: qtdProduto,
         });
@@ -150,26 +140,34 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
     setCodigoProduto('');
     setQtdProduto(0);
     setProduto(undefined);
-    // const totalVenda = calculaTotalVenda();
-    formik.setFieldValue('totalVenda', calculaTotalVenda());
+    formik.setFieldValue('totalVenda', calculaTotalVenda(itensAdicionados));
   };
 
-  const handleRemoverProduto = (id: string) => {
-    const result = formik.values.itens?.filter(
-      (iv: ItemVenda) => iv.produto.id !== id,
-    );
-    formik.setFieldValue('itens', result);
-    formik.setFieldValue('totalVenda', calculaTotalVenda());
-  };
+  const actionTemplate = (item: ItemVenda) => {
+    const handleRemoverProduto = () => {
+      const result =
+        formik.values.itens?.filter(
+          (iv: ItemVenda) => iv.produto.id !== item.produto.id,
+        ) ?? [];
 
-  const actionTemplate = (itens: ItemVenda) => {
+      formik.setFieldValue('itens', result);
+
+      const total = calculaTotalVenda(result) ?? 0;
+
+      if (total > 0) {
+        formik.setFieldValue('totalVenda', total);
+      } else {
+        formik.setFieldValue('totalVenda', 0);
+      }
+    };
+
     return (
       <div>
         <Button
           type="button"
           label="Excluir"
-          className="p-button-text p-button-sm"
-          onClick={() => handleRemoverProduto(itens.produto.id!)}
+          className="p-button-danger p-button-sm"
+          onClick={handleRemoverProduto}
         />
       </div>
     );
