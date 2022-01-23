@@ -21,16 +21,18 @@ public class Venda {
   private Long id;
 
   @Enumerated(EnumType.STRING)
+  @Column(name = "forma_pagamento", nullable = false, length = 20)
   private FormaPagamento formaPagamento;
 
   @ManyToOne
-  @JoinColumn(name = "id_cliente")
+  @JoinColumn(name = "id_cliente", nullable = false,
+      foreignKey = @ForeignKey(name = "fk_cliente"))
   private Cliente cliente;
 
   @OneToMany(mappedBy = "venda")
   private List<ItemVenda> itens = new ArrayList<>();
 
-  @Column(name = "total_venda")
+  @Column(name = "total_venda", nullable = false, precision = 16, scale = 2)
   private BigDecimal totalVenda;
 
   @Column(name = "data_cadastro")

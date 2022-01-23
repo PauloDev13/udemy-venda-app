@@ -17,14 +17,16 @@ public class ItemVenda {
   private Long id;
 
   @ManyToOne
-  @JoinColumn(name = "id_venda")
+  @JoinColumn(name = "id_venda", nullable = false,
+      foreignKey = @ForeignKey(name = "fk_venda"))
   private Venda venda;
 
   @ManyToOne
-  @JoinColumn(name = "id_produto")
+  @JoinColumn(name = "id_produto", nullable = false,
+      foreignKey = @ForeignKey(name = "fk_produto"))
   private Product produto;
 
-  @Column
+  @Column(nullable = false)
   private Integer quantidade;
 
   @Override
