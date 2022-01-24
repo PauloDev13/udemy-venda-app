@@ -9,7 +9,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -20,5 +20,5 @@ public class VendaRequestDto implements Serializable {
   private final List<ItemVenda> itens;
   private final BigDecimal totalVenda;
   private final FormaPagamento formaPagamento;
-  private final LocalDate createdAt;
+  private final LocalDateTime createdAt;
 }

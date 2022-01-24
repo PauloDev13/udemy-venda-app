@@ -31,12 +31,20 @@ export const Form: NextPage<FormProps> = ({ cliente, onSubmit }: FormProps) => {
             value={formik.values.id}
           />
           <Input
-            label="Data Cadastro: *"
+            label="Data Cadastro:"
             id="createdAt"
             name="createdAt"
             disabled
             columnClasse="is-half"
             value={formik.values.dateRegister}
+          />
+          <Input
+            label="Data Atualização:"
+            id="updatedAt"
+            name="updatedAt"
+            disabled
+            columnClasse="is-half"
+            value={formik.values.updatedAt}
           />
         </div>
       )}

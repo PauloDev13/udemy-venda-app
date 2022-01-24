@@ -1,5 +1,6 @@
 package com.devpgm.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,7 @@ public class ItemVenda {
   private Long id;
 
   @ManyToOne
+  @JsonIgnore
   @JoinColumn(name = "id_venda", nullable = false,
       foreignKey = @ForeignKey(name = "fk_venda"))
   private Venda venda;

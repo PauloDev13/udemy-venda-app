@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -16,7 +16,7 @@ public class ProductRequestDto implements Serializable {
   private final String name;
   private final String description;
   private final BigDecimal price;
-  private OffsetDateTime createdAt;
-  private OffsetDateTime updatedAt;
+  private LocalDateTime createdAt;
+  private LocalDateTime updatedAt;
 
 }

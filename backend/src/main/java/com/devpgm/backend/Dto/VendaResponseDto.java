@@ -10,7 +10,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -23,6 +23,6 @@ public class VendaResponseDto implements Serializable {
   private final BigDecimal totalVenda;
   private final FormaPagamento formaPagamento;
 
-  @JsonFormat(pattern = "dd/MM/yyyy")
-  private final LocalDate createdAt;
+  @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+  private final LocalDateTime createdAt;
 }

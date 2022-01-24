@@ -50,6 +50,7 @@ export const TableProduct = ({
       paginator
       rows={5}
       size="small"
+      emptyMessage="Não há produtos cadastrados"
       alwaysShowPaginator={false}
     >
       <Column header="Código" field="id" />

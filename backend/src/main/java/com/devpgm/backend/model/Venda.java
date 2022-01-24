@@ -1,13 +1,13 @@
 package com.devpgm.backend.model;
 
 import com.devpgm.backend.Dto.enums.FormaPagamento;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,13 +30,19 @@ public class Venda {
   private Cliente cliente;
 
   @OneToMany(mappedBy = "venda")
-  private List<ItemVenda> itens = new ArrayList<>();
+  private List<ItemVenda> itens;
 
   @Column(name = "total_venda", nullable = false, precision = 16, scale = 2)
   private BigDecimal totalVenda;
 
   @Column(name = "data_cadastro")
-  private LocalDate createdAt;
+  @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+  private LocalDateTime createdAt;
+
+  @PrePersist
+  private void prePersist() {
+    setCreatedAt(LocalDateTime.now());
+  }
 
   @Override
   public boolean equals(Object o) {

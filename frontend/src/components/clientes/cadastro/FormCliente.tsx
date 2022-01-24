@@ -71,7 +71,7 @@ export const FormCliente: NextPage = () => {
         setCliente(response);
       });
     }
-  }, []);
+  }, [cliente]);
 
   return (
     <Layout title="Cadastro de Clientes" messages={messages}>

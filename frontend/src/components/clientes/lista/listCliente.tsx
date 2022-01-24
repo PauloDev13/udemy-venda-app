@@ -143,6 +143,7 @@ export const ListCliente: NextPage = () => {
             onPage={handlePage}
             loading={loading}
             size="small"
+            alwaysShowPaginator={false}
             emptyMessage="Nenhum cliente encontrado para os parâmetros informados"
           >
             <Column field="id" header="Código" />

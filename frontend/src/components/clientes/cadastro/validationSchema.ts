@@ -35,6 +35,7 @@ const formSchema: ClienteModel = {
   phone: '',
   dateBirth: '',
   dateRegister: '',
+  updatedAt: '',
 };
 
 export const formikCliente = (

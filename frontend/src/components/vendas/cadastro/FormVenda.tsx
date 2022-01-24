@@ -29,6 +29,8 @@ const formatMoney = new Intl.NumberFormat('pt-BR', {
 
 interface VendasFormProps {
   onSubmit: (venda: VendaModel) => void;
+  onNovaVenda: () => void;
+  vendaRealizada: boolean;
 }
 
 const formSchema: VendaModel = {
@@ -38,7 +40,11 @@ const formSchema: VendaModel = {
   totalVenda: 0,
 };
 
-export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
+export const FormVenda: NextPage<VendasFormProps> = ({
+  onSubmit,
+  onNovaVenda,
+  vendaRealizada,
+}) => {
   const clienteService = useClienteService();
   const produtoService = useProductService();
 
@@ -181,10 +187,17 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
     return <Button label="Ok" onClick={() => setMessage('')} autoFocus />;
   };
 
+  const realizarNovaVenda = () => {
+    onNovaVenda();
+    formik.resetForm();
+    formik.setFieldValue('itens', []);
+    formik.setFieldTouched('itens', false);
+  };
+
   const formik = useFormik({
     onSubmit,
     initialValues: formSchema,
-    validationSchema: validationSchema,
+    validationSchema,
   });
 
   useEffect(() => {
@@ -268,9 +281,13 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
               value={formik.values.itens}
               size="small"
               emptyMessage={
-                formik.errors.itens && (
+                formik.errors.itens && formik.touched ? (
                   <small className="p-error block">
                     Adicione pelo menos um item na venda
+                  </small>
+                ) : (
+                  <small className="p-message-warn block">
+                    Não há itens adicionados à venda
                   </small>
                 )
               }
@@ -297,6 +314,9 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
               />
               <Column header="Opção" body={actionTemplate} />
             </DataTable>
+            {/*<small className="p-error block">*/}
+            {/*  {formik.touched && formik.errors.itens}*/}
+            {/*</small>*/}
           </div>
           <div className="field col-6">
             <label htmlFor="formaPagamento">Forma de Pagamento: *</label>
@@ -335,7 +355,18 @@ export const FormVenda: NextPage<VendasFormProps> = ({ onSubmit }) => {
             />
           </div>
         </div>
-        <Button label="Finalizar" type="submit" disabled={!formik.isValid} />
+        {!vendaRealizada && (
+          <Button label="Finalizar" type="submit" disabled={!formik.isValid} />
+        )}
+        {vendaRealizada && (
+          <Button
+            label="Nova venda"
+            type="button"
+            disabled={!formik.isValid}
+            className="p-button-success"
+            onClick={realizarNovaVenda}
+          />
+        )}
       </div>
       <Dialog
         header="ATENÇÃO!!"

@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -24,5 +24,9 @@ public class ClienteResponseDto implements Serializable {
   private final LocalDate dateBirth;
 
   @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-  private final OffsetDateTime dateRegister;
+  private final LocalDateTime dateRegister;
+
+  @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+  private final LocalDateTime updatedAt;
+
 }

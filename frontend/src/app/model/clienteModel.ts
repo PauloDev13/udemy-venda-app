@@ -7,4 +7,5 @@ export interface ClienteModel {
   phone?: string;
   dateBirth?: string;
   dateRegister?: string;
+  updatedAt?: string;
 }

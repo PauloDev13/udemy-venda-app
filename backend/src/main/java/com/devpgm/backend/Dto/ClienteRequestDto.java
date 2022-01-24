@@ -1,6 +1,5 @@
 package com.devpgm.backend.Dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +16,6 @@ public class ClienteRequestDto implements Serializable {
   private final String cpf;
   private final String address;
   private final String phone;
-
-  @JsonFormat(pattern = "dd/MM/yyyy")
   private final LocalDate dateBirth;
+
 }

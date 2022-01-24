@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,8 +20,8 @@ public class ProductResponseDto implements Serializable {
   private final BigDecimal price;
 
   @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-  private OffsetDateTime createdAt;
+  private LocalDateTime createdAt;
 
   @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-  private OffsetDateTime updatedAt;
+  private LocalDateTime updatedAt;
 }

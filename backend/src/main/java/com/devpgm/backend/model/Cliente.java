@@ -1,11 +1,12 @@
 package com.devpgm.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
@@ -34,13 +35,27 @@ public class Cliente {
   private String phone;
 
   @Column(nullable = false)
+  @JsonFormat(pattern = "dd/MM/yyyy")
   private LocalDate dateBirth;
 
-  private OffsetDateTime dateRegister;
+  @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+  private LocalDateTime dateRegister;
+
+  @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+  private LocalDateTime updatedAt;
 
   @PrePersist
   private void prePersist() {
-    setDateRegister(OffsetDateTime.now());
+    setDateRegister(LocalDateTime.now());
+    
+    if (getUpdatedAt() == null) {
+      setUpdatedAt(LocalDateTime.now());
+    }
+  }
+
+  @PreUpdate
+  private void preUpdate() {
+    setUpdatedAt(LocalDateTime.now());
   }
 
   @Override
