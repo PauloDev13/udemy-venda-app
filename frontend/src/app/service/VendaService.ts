@@ -12,7 +12,21 @@ export const useVendaService = () => {
     return response.data;
   };
 
+  const gerarRelatorioVendas = async (
+    clienteId = '',
+    dataInicio = '',
+    dataFim = '',
+  ): Promise<Blob> => {
+    const url = `${resourceUrl}/relatorio-vendas?id=${clienteId}&inicio=${dataInicio}&fim=${dataFim}`;
+    const response: AxiosResponse = await httpClient.get(url, {
+      responseType: 'blob',
+    });
+    const bytes = response.data;
+    return new Blob([bytes], { type: 'application/pdf' });
+  };
+
   return {
     save,
+    gerarRelatorioVendas,
   };
 };

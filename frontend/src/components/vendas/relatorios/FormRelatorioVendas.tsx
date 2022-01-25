@@ -12,6 +12,7 @@ import { Button } from 'primereact/button';
 import { ClienteModel } from '~/app/model/clienteModel';
 import { Page } from '~/app/model/Page';
 import { useClienteService } from '~/app/service/ClienteService';
+import { useVendaService } from '~/app/service/VendaService';
 import { InputDate } from '~/components/common/input/Input';
 import { Layout } from '~/components/layout/Layout';
 
@@ -23,6 +24,7 @@ interface IFormRelatorioVendas {
 
 export const FormRelatorioVendas: NextPage<IFormRelatorioVendas> = () => {
   const clienteService = useClienteService();
+  const vendaService = useVendaService();
 
   const [listaClientes, setListaClientes] = useState<Page<ClienteModel>>({
     content: [],
@@ -45,7 +47,13 @@ export const FormRelatorioVendas: NextPage<IFormRelatorioVendas> = () => {
   };
 
   const handleSubmit = (formData: IFormRelatorioVendas) => {
-    console.log(formData);
+    const { cliente, dataInicio, dataFim } = formData;
+    vendaService
+      .gerarRelatorioVendas(cliente?.id, dataInicio, dataFim)
+      .then((response) => {
+        const fileURL = URL.createObjectURL(response);
+        window.open(fileURL);
+      });
   };
 
   const formik = useFormik<IFormRelatorioVendas>({

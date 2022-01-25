@@ -10,7 +10,6 @@ import com.devpgm.backend.service.VendaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,14 +30,19 @@ public class VendaController {
   }
 
   @GetMapping("/relatorio-vendas")
-  public ResponseEntity<byte[]> relatorioVendas() {
-    var relatorioGerado = relatorioService.gerarRelatorio();
+  public ResponseEntity<byte[]> relatorioVendas(
+      @RequestParam(required = false, defaultValue = "0") Long id,
+      @RequestParam(required = false, defaultValue = "") String inicio,
+      @RequestParam(required = false, defaultValue = "") String fim
+
+  ) {
+    var relatorioGerado = relatorioService.gerarRelatorio(id, inicio, fim);
     var headers = new HttpHeaders();
     var fileName = "relatorio-vendas.pdf";
 
-    // headers.setContentDispositionFormData("inline; filename=\"" + fileName + "\"", fileName);
-    headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=\"" + fileName);
-    headers.setContentType(MediaType.APPLICATION_PDF);
+    headers.setContentDispositionFormData("inline; filename=\"" + fileName + "\"", fileName);
+    // headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=\"" + fileName);
+    // headers.setContentType(MediaType.APPLICATION_PDF);
     headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
     // return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(relatorioGerado);
     return new ResponseEntity<>(relatorioGerado, headers, HttpStatus.OK);

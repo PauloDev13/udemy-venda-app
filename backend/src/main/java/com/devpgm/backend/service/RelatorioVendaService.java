@@ -25,7 +25,7 @@ public class RelatorioVendaService {
   @Value("classpath:reports/relatorio-vendas.jasper")
   private Resource relatorioVendasCompilado;
 
-  public byte[] gerarRelatorio() {
+  public byte[] gerarRelatorio(Long id, String dataInicio, String dataFim) {
     try {
       Connection connection = dataSource.getConnection();
       Map<String, Object> params = new HashMap<>();
