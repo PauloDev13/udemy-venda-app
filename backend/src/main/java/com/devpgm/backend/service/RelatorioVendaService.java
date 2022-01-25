@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class RelatorioVendaService {
   @Value("classpath:reports/relatorio-vendas.jasper")
   private Resource relatorioVendasCompilado;
 
-  public byte[] gerarRelatorio(Long id, String dataInicio, String dataFim) {
+  public byte[] gerarRelatorio(Long id, Date dataInicio, Date dataFim) {
     try {
       Connection connection = dataSource.getConnection();
       Map<String, Object> params = new HashMap<>();

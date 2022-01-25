@@ -2,6 +2,7 @@ package com.devpgm.backend.rest;
 
 import com.devpgm.backend.Dto.VendaRequestDto;
 import com.devpgm.backend.Dto.VendaResponseDto;
+import com.devpgm.backend.Util.DateUtils;
 import com.devpgm.backend.mapper.VendaRequestMapper;
 import com.devpgm.backend.mapper.VendaResponseMapper;
 import com.devpgm.backend.model.Venda;
@@ -36,7 +37,11 @@ public class VendaController {
       @RequestParam(required = false, defaultValue = "") String fim
 
   ) {
-    var relatorioGerado = relatorioService.gerarRelatorio(id, inicio, fim);
+    var dataInicio = DateUtils.fromString(inicio);
+    var dataFim = DateUtils.fromString(fim, true);
+
+
+    var relatorioGerado = relatorioService.gerarRelatorio(id, dataInicio, dataFim);
     var headers = new HttpHeaders();
     var fileName = "relatorio-vendas.pdf";
 
