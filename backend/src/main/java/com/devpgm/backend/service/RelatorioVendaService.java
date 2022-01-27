@@ -26,10 +26,15 @@ public class RelatorioVendaService {
   @Value("classpath:reports/relatorio-vendas.jasper")
   private Resource relatorioVendasCompilado;
 
-  public byte[] gerarRelatorio(Long id, Date dataInicio, Date dataFim) {
+  public byte[] gerarRelatorio(Long clienteId, Date dataInicio, Date dataFim) {
     try {
       Connection connection = dataSource.getConnection();
+
       Map<String, Object> params = new HashMap<>();
+      params.put("ID_CLIENTE", clienteId);
+      params.put("DATA_INICIO", dataInicio);
+      params.put("DATA_FINAL", dataFim);
+
       return JasperRunManager.runReportToPdf(
           relatorioVendasCompilado.getInputStream(), params, connection);
 
